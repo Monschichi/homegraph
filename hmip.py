@@ -106,7 +106,6 @@ class HmIP(object):
 
     def get_metrics(self, start, end, resolution, metrics):
         ret = []
-        m = {}
         for root, dirs, files in walk(path.join(app.instance_path, 'rrds')):
             for file in files:
                 if file.endswith('.rrd'):
