@@ -46,7 +46,7 @@ def annotations():
 @app.before_first_request
 def startup():
     global homematic_ip
-    homematic_ip: HmIP = HmIP()
+    homematic_ip = HmIP()
 
 
 if __name__ == '__main__':
