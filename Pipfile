@@ -2,6 +2,3 @@
 flask = ">=1.1.0"
 rrdtool = ">=0.1.10"
 homematicip = ">=0.11.0"
-
-[requires]
-python_version = "3.8"
