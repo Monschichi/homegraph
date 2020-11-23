@@ -19,17 +19,15 @@ from homematicip.home import Home
 
 class HmIP(object):
     def __init__(self):
-        config = homematicip.load_config_file(config_file=path.join(app.instance_path, 'config.ini'))
+        self.config = homematicip.load_config_file(config_file=path.join(app.instance_path, 'config.ini'))
         self.home = Home()
-        self.home.set_auth_token(config.auth_token)
-        self.home.init(config.access_point)
-        self.home.get_current_state()
+        self.home.set_auth_token(self.config.auth_token)
+        self.home.init(self.config.access_point)
 
     def fetch_metrics(self):
-        try:
+        if not self.home.get_current_state():
+            self.home.init(self.config.access_point)
             self.home.get_current_state()
-        except Exception as e:
-            app.logger.error(repr(e))
         for group in self.home.groups:
             if group.groupType == 'META':
                 for device in group.devices:
