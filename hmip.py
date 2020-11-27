@@ -43,8 +43,8 @@ class HmIP(object):
         if not path.exists(rrd):
             makedirs(path.join(app.instance_path, 'rrds', room), mode=0o0750, exist_ok=True)
             rrdtool.create(rrd, '--start', 'now', '--step', '180', 'DS:state:GAUGE:540:0:1', 'RRA:AVERAGE:0.5:1:360000')
-        rrdtool.update(path.join(app.instance_path, 'rrds', room, f'{device.label}.rrd'), f'N: {self.__window_state(device.windowState)}')
         app.logger.debug('room: {}, label: {}, windowState: {}'.format(room, device.label, device.windowState))
+        rrdtool.update(path.join(app.instance_path, 'rrds', room, f'{device.label}.rrd'), f'N: {self.__window_state(device.windowState)}')
 
     @staticmethod
     def __collect_thermostat_metrics(room, device):
@@ -54,11 +54,11 @@ class HmIP(object):
             rrdtool.create(rrd, '--start', 'now', '--step', '180', 'DS:actualtemperature:GAUGE:540:0:50',
                            'DS:settemperature:GAUGE:540:0:40', 'DS:humidity:GAUGE:540:0:100', 'DS:vapor:GAUGE:540:0:100',
                            'RRA:AVERAGE:0.5:1:360000')
+        app.logger.debug(f'room: {room}, label: {device.label}, temperature_actual: {device.actualTemperature}, temperature_setpoint: '
+                         f'{device.setPointTemperature}, humidity_actual: {device.humidity} vaporAmount: {device.vaporAmount}')
         rrdtool.update(path.join(app.instance_path, 'rrds', room, f'{device.label}.rrd'), f'N: {device.actualTemperature}:'
                                                                                           f'{device.setPointTemperature}:'
                                                                                           f'{device.humidity}:{device.vaporAmount}')
-        app.logger.debug(f'room: {room}, label: {device.label}, temperature_actual: {device.actualTemperature}, temperature_setpoint: '
-                         f'{device.setPointTemperature}, humidity_actual: {device.humidity} vaporAmount: {device.vaporAmount}')
 
     @staticmethod
     def __collect_thermostat_outdoor_metrics(room, device):
@@ -67,11 +67,11 @@ class HmIP(object):
             makedirs(path.join(app.instance_path, 'rrds', room), mode=0o0750, exist_ok=True)
             rrdtool.create(rrd, '--start', 'now', '--step', '180', 'DS:actualtemperature:GAUGE:540:-20:55', 'DS:humidity:GAUGE:540:0:100',
                            'DS:vapor:GAUGE:540:0:100', 'RRA:AVERAGE:0.5:1:360000')
-        rrdtool.update(path.join(app.instance_path, 'rrds', room, f'{device.label}.rrd'), f'N: {device.actualTemperature}:'
-                                                                                          f'{device.humidity}:{device.vaporAmount}')
         app.logger.debug(
             f'room: {room}, label: {device.label}, temperature_actual: {device.actualTemperature}, humidity_actual: {device.humidity} '
             f'vaporAmount: {device.vaporAmount}')
+        rrdtool.update(path.join(app.instance_path, 'rrds', room, f'{device.label}.rrd'), f'N: {device.actualTemperature}:'
+                                                                                          f'{device.humidity}:{device.vaporAmount}')
 
     @staticmethod
     def __window_state(state):
